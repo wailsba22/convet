@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quran Video Generator - Create Beautiful Islamic Videos</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+        <div class="bg-circle bg-circle-3"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="25" cy="25" r="23" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M25 10 L25 40 M15 25 L35 25" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="25" cy="25" r="5" fill="currentColor"/>
+                </svg>
+            </div>
+            <h1>Quran Video Generator</h1>
+            <p class="subtitle">Create stunning videos with Quranic verses in seconds</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="random">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                </svg>
+                Random Verse
+            </button>
+            <button class="tab" data-tab="specific">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                Specific Verse
+            </button>
+            <button class="tab" data-tab="range">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                Range
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="content">
+            <!-- Random Tab -->
+            <div class="tab-content active" id="random">
+                <form id="randomForm" class="form">
+                    <div class="form-group">
+                        <label for="count">Number of Videos</label>
+                        <input type="number" id="count" name="count" min="1" max="10" value="1" required>
+                        <small>Generate 1-10 random videos at once</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="second_language">Second Language</label>
+                        <select id="second_language" name="second_language">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="ur">Urdu</option>
+                            <option value="tr">Turkish</option>
+                            <option value="id">Indonesian</option>
+                        </select>
+                        <small>Arabic is always included</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reciter_random">Reciter</label>
+                        <select id="reciter_random" name="reciter">
+                            <option value="ar.alafasy">Mishary Alafasy</option>
+                            <option value="ar.abdulbasit">Abdul Basit</option>
+                            <option value="ar.hani">Hani Ar-Rifai</option>
+                            <option value="ar.husary">Mahmoud Al-Husary</option>
+                            <option value="ar.minshawi">Mohamed Al-Minshawi</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Generate Videos
+                    </button>
+                </form>
+            </div>
+
+            <!-- Specific Tab -->
+            <div class="tab-content" id="specific">
+                <form id="specificForm" class="form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="surah">Surah Number</label>
+                            <input type="number" id="surah" name="surah" min="1" max="114" placeholder="1-114" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="verse">Verse Number</label>
+                            <input type="number" id="verse" name="verse" min="1" placeholder="Verse" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="second_language_specific">Second Language</label>
+                        <select id="second_language_specific" name="second_language">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="ur">Urdu</option>
+                            <option value="tr">Turkish</option>
+                            <option value="id">Indonesian</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reciter_specific">Reciter</label>
+                        <select id="reciter_specific" name="reciter">
+                            <option value="ar.alafasy">Mishary Alafasy</option>
+                            <option value="ar.abdulbasit">Abdul Basit</option>
+                            <option value="ar.hani">Hani Ar-Rifai</option>
+                            <option value="ar.husary">Mahmoud Al-Husary</option>
+                            <option value="ar.minshawi">Mohamed Al-Minshawi</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Generate Video
+                    </button>
+                </form>
+            </div>
+
+            <!-- Range Tab -->
+            <div class="tab-content" id="range">
+                <form id="rangeForm" class="form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="start_surah">Start Surah</label>
+                            <input type="number" id="start_surah" name="start_surah" min="1" max="114" placeholder="1-114" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="start_verse">Start Verse</label>
+                            <input type="number" id="start_verse" name="start_verse" min="1" placeholder="Verse" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="end_surah">End Surah</label>
+                            <input type="number" id="end_surah" name="end_surah" min="1" max="114" placeholder="1-114" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end_verse">End Verse</label>
+                            <input type="number" id="end_verse" name="end_verse" min="1" placeholder="Verse" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="second_language_range">Second Language</label>
+                        <select id="second_language_range" name="second_language">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="ur">Urdu</option>
+                            <option value="tr">Turkish</option>
+                            <option value="id">Indonesian</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reciter_range">Reciter</label>
+                        <select id="reciter_range" name="reciter">
+                            <option value="ar.alafasy">Mishary Alafasy</option>
+                            <option value="ar.abdulbasit">Abdul Basit</option>
+                            <option value="ar.hani">Hani Ar-Rifai</option>
+                            <option value="ar.husary">Mahmoud Al-Husary</option>
+                            <option value="ar.minshawi">Mohamed Al-Minshawi</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Generate Videos
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section" id="progressSection" style="display: none;">
+            <div class="progress-header">
+                <h3>Generating Your Videos</h3>
+                <p id="progressText">Starting generation...</p>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-details">
+                <span id="progressDetails">0 of 0 videos</span>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <div class="results-header">
+                <h3>Your Videos Are Ready!</h3>
+                <button class="btn btn-secondary" onclick="resetGenerator()">Generate More</button>
+            </div>
+            <div id="videoList" class="video-list"></div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Made with ❤️ for the Muslim community</p>
+            <p class="footer-note">May Allah accept this work</p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
