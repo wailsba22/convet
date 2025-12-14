@@ -535,10 +535,14 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         print("✓ Resized background to 9:16")
         return str(output_video)
     
-    def generate_random_video(self, output_filename: Optional[str] = None) -> str:
+    def generate_random_video(self, output_filename: Optional[str] = None, progress_callback=None) -> str:
         """
         Generate video with random background, random surah, and random reciter
         Matches content length to background video duration
+        
+        Args:
+            output_filename: Custom output filename (optional)
+            progress_callback: Progress callback function (optional)
         
         Returns:
             Path to the generated video file
@@ -581,6 +585,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         ayahs = self.get_ayah_data(surah, ayah_start, ayah_end, reciter)
         
         # Continue with normal generation...
+        # Set progress callback before generating
+        if progress_callback:
+            self.progress_callback = progress_callback
+        
         return self._generate_video_internal(
             ayahs=ayahs,
             surah=surah,
@@ -598,7 +606,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         ayah_start: int, 
         ayah_end: int,
         reciter: str = "ar.alafasy",
-        output_filename: Optional[str] = None
+        output_filename: Optional[str] = None,
+        progress_callback=None
     ) -> str:
         """
         Main function to generate the complete video
@@ -609,11 +618,16 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             ayah_end: Ending ayah number
             reciter: Reciter identifier
             output_filename: Custom output filename (optional)
+            progress_callback: Progress callback function (optional)
         
         Returns:
             Path to the generated video file
         """
         print(f"\n🎬 Starting video generation for Surah {surah}, Ayah {ayah_start}-{ayah_end}\n")
+        
+        # Set progress callback before generating
+        if progress_callback:
+            self.progress_callback = progress_callback
         
         # Step 1: Get ayah data
         print("📖 Fetching Quran data...")

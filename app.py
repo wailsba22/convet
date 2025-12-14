@@ -98,7 +98,7 @@ def generate_random_worker(task_id, generator, count):
 
 @app.route('/api/generate/specific', methods=['POST'])
 def generate_specific():
-    """Generate specific verse video"""
+    """Generate specific verse video (same as range with start=end)"""
     data = request.json
     surah = data.get('surah')
     verse = data.get('verse')
@@ -125,10 +125,10 @@ def generate_specific():
         'videos': []
     }
     
-    # Start generation in background thread
+    # Start generation in background thread (use range worker with same start/end)
     thread = threading.Thread(
-        target=generate_specific_worker,
-        args=(task_id, generator, surah, verse, verse)
+        target=generate_range_worker,
+        args=(task_id, generator, surah, verse, surah, verse)
     )
     thread.daemon = True
     thread.start()
@@ -176,37 +176,7 @@ def generate_range():
     
     return jsonify({'task_id': task_id})
 
-def generate_specific_worker(task_id, generator, surah, start_verse, end_verse):
-    """Background worker for specific verse generation"""
-    try:
-        active_tasks[task_id]['status'] = 'Generating video...'
-        
-        def progress_callback(progress, msg=""):
-            active_tasks[task_id]['progress'] = progress
-            if msg:
-                active_tasks[task_id]['status'] = msg
-        
-        video_path = generator.generate_video(
-            surah=surah,
-            ayah_start=start_verse,
-            ayah_end=end_verse,
-            progress_callback=progress_callback
-        )
-        
-        if video_path:
-            video_name = Path(video_path).name
-            active_tasks[task_id]['videos'].append({
-                'name': video_name,
-                'path': str(video_path)
-            })
-        
-        active_tasks[task_id]['status'] = 'completed'
-        active_tasks[task_id]['progress'] = 100
-        active_tasks[task_id]['current'] = 1
-        
-    except Exception as e:
-        active_tasks[task_id]['status'] = 'failed'
-        active_tasks[task_id]['error'] = str(e)
+
 
 def generate_range_worker(task_id, generator, start_surah, start_verse, end_surah, end_verse):
     """Background worker for range generation"""
