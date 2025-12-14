@@ -87,14 +87,25 @@ function pollProgress(taskId) {
             const response = await fetch(`/api/progress/${taskId}`);
             const progress = await response.json();
             
-            // Update progress
-            const percentage = progress.total > 0 
-                ? Math.round((progress.current / progress.total) * 100)
-                : 0;
+            // Check if task not found
+            if (progress.status === 'not_found') {
+                clearInterval(interval);
+                alert('Task not found. Please try again.');
+                resetGenerator();
+                return;
+            }
             
-            progressBar.style.width = percentage + '%';
-            progressText.textContent = progress.status;
-            progressDetails.textContent = `${progress.current} of ${progress.total} videos`;
+            // Update progress bar and text
+            const progressValue = progress.progress || 0;
+            progressBar.style.width = progressValue + '%';
+            progressText.textContent = progress.status || 'Processing...';
+            
+            // Update details if available
+            if (progress.total !== undefined && progress.current !== undefined) {
+                progressDetails.textContent = `${progress.current} of ${progress.total} videos`;
+            } else {
+                progressDetails.textContent = `${progressValue}% complete`;
+            }
             
             // Check if complete
             if (progress.status === 'completed') {
