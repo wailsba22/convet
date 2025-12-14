@@ -75,6 +75,7 @@ def generate_random_worker(task_id, generator, count):
                 active_tasks[task_id]['progress'] = int(((i + progress/100) / count) * 100)
                 if msg:
                     active_tasks[task_id]['status'] = msg
+                return True  # Always return True to continue processing
             
             video_path = generator.generate_random_video(
                 progress_callback=progress_callback
@@ -96,52 +97,12 @@ def generate_random_worker(task_id, generator, count):
         active_tasks[task_id]['status'] = 'failed'
         active_tasks[task_id]['error'] = str(e)
 
-@app.route('/api/generate/specific', methods=['POST'])
-def generate_specific():
-    """Generate specific verse video (same as range with start=end)"""
-    data = request.json
-    surah = data.get('surah')
-    verse = data.get('verse')
-    second_language = data.get('second_language', 'en')
-    reciter = data.get('reciter', 'ar.alafasy')
-    
-    # Create task ID
-    task_id = str(uuid.uuid4())
-    
-    # Create generator
-    generator = QuranVideoGenerator(
-        output_dir=str(OUTPUT_DIR),
-        background_videos_dir="backgrounds"
-    )
-    generator.subtitle_languages = ["ar", second_language]
-    generator.default_reciter = reciter
-    
-    # Store task
-    active_tasks[task_id] = {
-        'status': 'starting',
-        'progress': 0,
-        'current': 0,
-        'total': 1,
-        'videos': []
-    }
-    
-    # Start generation in background thread (use range worker with same start/end)
-    thread = threading.Thread(
-        target=generate_range_worker,
-        args=(task_id, generator, surah, verse, surah, verse)
-    )
-    thread.daemon = True
-    thread.start()
-    
-    return jsonify({'task_id': task_id})
-
 @app.route('/api/generate/range', methods=['POST'])
 def generate_range():
-    """Generate range of verses"""
+    """Generate range of verses from a single surah"""
     data = request.json
-    start_surah = data.get('start_surah')
+    surah = data.get('surah')
     start_verse = data.get('start_verse')
-    end_surah = data.get('end_surah')
     end_verse = data.get('end_verse')
     second_language = data.get('second_language', 'en')
     reciter = data.get('reciter', 'ar.alafasy')
@@ -169,7 +130,7 @@ def generate_range():
     # Start generation in background thread
     thread = threading.Thread(
         target=generate_range_worker,
-        args=(task_id, generator, start_surah, start_verse, end_surah, end_verse)
+        args=(task_id, generator, surah, start_verse, end_verse)
     )
     thread.daemon = True
     thread.start()
@@ -178,7 +139,7 @@ def generate_range():
 
 
 
-def generate_range_worker(task_id, generator, start_surah, start_verse, end_surah, end_verse):
+def generate_range_worker(task_id, generator, surah, start_verse, end_verse):
     """Background worker for range generation"""
     try:
         active_tasks[task_id]['status'] = 'Generating video range...'
@@ -187,61 +148,21 @@ def generate_range_worker(task_id, generator, start_surah, start_verse, end_sura
             active_tasks[task_id]['progress'] = progress
             if msg:
                 active_tasks[task_id]['status'] = msg
+            return True  # Always return True to continue processing
         
-        # For simplicity, generate as single video if same surah, or multiple if different
-        if start_surah == end_surah:
-            video_path = generator.generate_video(
-                surah=start_surah,
-                ayah_start=start_verse,
-                ayah_end=end_verse,
-                progress_callback=progress_callback
-            )
-            
-            if video_path:
-                video_name = Path(video_path).name
-                active_tasks[task_id]['videos'].append({
-                    'name': video_name,
-                    'path': str(video_path)
-                })
-        else:
-            # Generate first surah to end
-            video_path = generator.generate_video(
-                surah=start_surah,
-                ayah_start=start_verse,
-                progress_callback=progress_callback
-            )
-            if video_path:
-                video_name = Path(video_path).name
-                active_tasks[task_id]['videos'].append({
-                    'name': video_name,
-                    'path': str(video_path)
-                })
-            
-            # Generate middle surahs (if any)
-            for surah in range(start_surah + 1, end_surah):
-                video_path = generator.generate_video(
-                    surah=surah,
-                    progress_callback=progress_callback
-                )
-                if video_path:
-                    video_name = Path(video_path).name
-                    active_tasks[task_id]['videos'].append({
-                        'name': video_name,
-                        'path': str(video_path)
-                    })
-            
-            # Generate last surah from start to end_verse
-            video_path = generator.generate_video(
-                surah=end_surah,
-                ayah_end=end_verse,
-                progress_callback=progress_callback
-            )
-            if video_path:
-                video_name = Path(video_path).name
-                active_tasks[task_id]['videos'].append({
-                    'name': video_name,
-                    'path': str(video_path)
-                })
+        video_path = generator.generate_video(
+            surah=surah,
+            ayah_start=start_verse,
+            ayah_end=end_verse,
+            progress_callback=progress_callback
+        )
+        
+        if video_path:
+            video_name = Path(video_path).name
+            active_tasks[task_id]['videos'].append({
+                'name': video_name,
+                'path': str(video_path)
+            })
         
         active_tasks[task_id]['status'] = 'completed'
         active_tasks[task_id]['progress'] = 100

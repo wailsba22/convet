@@ -28,25 +28,12 @@ document.getElementById('randomForm').addEventListener('submit', async (e) => {
     await generateVideos('/api/generate/random', data);
 });
 
-document.getElementById('specificForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = {
-        surah: parseInt(formData.get('surah')),
-        verse: parseInt(formData.get('verse')),
-        second_language: formData.get('second_language'),
-        reciter: formData.get('reciter')
-    };
-    await generateVideos('/api/generate/specific', data);
-});
-
 document.getElementById('rangeForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = {
-        start_surah: parseInt(formData.get('start_surah')),
+        surah: parseInt(formData.get('surah')),
         start_verse: parseInt(formData.get('start_verse')),
-        end_surah: parseInt(formData.get('end_surah')),
         end_verse: parseInt(formData.get('end_verse')),
         second_language: formData.get('second_language'),
         reciter: formData.get('reciter')

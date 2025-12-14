@@ -658,8 +658,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         """Internal method to generate video with given parameters"""
         
         # Check for cancellation
-        if self.progress_callback and not self.progress_callback(5):
-            raise Exception("Cancelled by user")
+        if self.progress_callback:
+            result = self.progress_callback(5)
+            if result is False:
+                raise Exception("Cancelled by user")
         
         # Get reciter short name for filename
         reciter_short_names = {
@@ -673,8 +675,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         
         # Step 2: Download audio (with smart duration checking)
         print("\n🎵 Downloading audio files...")
-        if self.progress_callback and not self.progress_callback(10):
-            raise Exception("Cancelled by user")
+        if self.progress_callback:
+            result = self.progress_callback(10)
+            if result is False:
+                raise Exception("Cancelled by user")
         
         # Use 95% of max_duration as buffer to avoid downloads that get cut
         max_dl_duration = float(self.max_duration) * 0.95
@@ -689,8 +693,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         
         # Step 3: Merge audio
         print("\n🔊 Merging audio...")
-        if self.progress_callback and not self.progress_callback(40):
-            raise Exception("Cancelled by user")
+        if self.progress_callback:
+            result = self.progress_callback(40)
+            if result is False:
+                raise Exception("Cancelled by user")
         merged_audio = self.merge_audio_files(audio_files)
         
         # Step 4: Get total duration
@@ -713,14 +719,18 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         
         # Step 5: Create subtitles
         print("📝 Creating subtitles...")
-        if self.progress_callback and not self.progress_callback(50):
-            raise Exception("Cancelled by user")
+        if self.progress_callback:
+            result = self.progress_callback(50)
+            if result is False:
+                raise Exception("Cancelled by user")
         subtitle_file = self.create_subtitle_file(ayahs, audio_files)
         
         # Step 6: Prepare background
         print("🎨 Preparing background...")
-        if self.progress_callback and not self.progress_callback(60):
-            raise Exception("Cancelled by user")
+        if self.progress_callback:
+            result = self.progress_callback(60)
+            if result is False:
+                raise Exception("Cancelled by user")
         if background_video:
             background = self.resize_video_to_portrait(background_video, total_duration)
         else:
@@ -728,8 +738,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         
         # Step 7: Combine everything
         print("\n🎬 Generating final video (this may take a moment)...)")
-        if self.progress_callback and not self.progress_callback(70):
-            raise Exception("Cancelled by user")
+        if self.progress_callback:
+            result = self.progress_callback(70)
+            if result is False:
+                raise Exception("Cancelled by user")
         
         if output_filename is None:
             # Get surah name
@@ -783,8 +795,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                 '-y'
             ], check=True, capture_output=False, creationflags=SUBPROCESS_FLAGS)
         
-        if self.progress_callback and not self.progress_callback(95):
-            raise Exception("Cancelled by user")
+        if self.progress_callback:
+            result = self.progress_callback(95)
+            if result is False:
+                raise Exception("Cancelled by user")
         
         print(f"\n✅ Video generated successfully!")
         print(f"📁 Output: {output_path}")
